@@ -7,6 +7,7 @@ import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,6 +18,7 @@ public class TodoController {
     private TodoRepositoryInterface repo;
 
     @GetMapping
+    @CrossOrigin(origins = "http://localhost:4200")
     public List<Todo> getAll() {
         return repo.findAll();
     }
@@ -27,12 +29,12 @@ public class TodoController {
     }
 
     @PostMapping
-    public Todo create(@RequestBody Todo todo) {
+    public Todo create(@Valid @RequestBody Todo todo) {
         return repo.save(todo);
     }
 
     @PutMapping("{id}")
-    public Todo update(@PathVariable Long id, @RequestBody Todo todo) {
+    public Todo update(@PathVariable Long id, @Valid @RequestBody Todo todo) {
         Todo entity = repo.findById(id).orElseThrow(() -> new TodoNotFoundException(id));
         entity.setId(id);
         entity.setTask(todo.getTask());
@@ -42,6 +44,7 @@ public class TodoController {
     }
 
     @DeleteMapping("{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public void delete(@PathVariable Long id) {
         repo.deleteById(id);
     }
